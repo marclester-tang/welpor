@@ -65,7 +65,27 @@ function* getCatsByBreed(action: any) {
     }
 }
 
+function* getCatDetails(action: any) {
+    try {
+        const {id} = action?.payload;
+        const response = yield axios.get(`${CAT_API_URL}images/${id}`);
+        if(response?.status === 200) {
+            //Setup a timeout to show that saga works =)
+            yield delay(1000);
+            yield put({
+                type: actionTypes.GET_CAT_DETAILS.SUCCESS,
+                payload: response?.data
+            });
+        }
+    }catch (e) {
+        yield put({
+            type: actionTypes.GET_CAT_DETAILS.FAILURE,
+        });
+    }
+}
+
 export default function* catSaga() {
     yield takeLatest(actionTypes.GET_BREEDS.REQUEST, getBreeds);
     yield takeLatest(actionTypes.GET_CATS_BY_BREED.REQUEST, getCatsByBreed);
+    yield takeLatest(actionTypes.GET_CAT_DETAILS.REQUEST, getCatDetails);
 }

@@ -3,8 +3,10 @@ import * as actionTypes from "../actions/cat.action";
 const initialState = {
     getBreedStatus: "pending",
     getCatListStatus: "pending",
+    getCatDetailsStatus: "pending",
     breeds: null,
     catsByBreed: [],
+    catDetails: null,
     showMore: false,
 };
 
@@ -41,6 +43,17 @@ const reducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 getCatListStatus: 'failure',
+            };
+        case actionTypes.GET_CAT_DETAILS.REQUEST:
+            return {
+                ...state,
+                getCatDetailsStatus: 'loading',
+            };
+        case actionTypes.GET_CAT_DETAILS.SUCCESS:
+            return {
+                ...state,
+                getCatDetailsStatus: 'success',
+                catDetails: action?.payload
             };
         case actionTypes.HAS_MORE:
             return {

@@ -8,3 +8,8 @@
     justify-content: center;
     align-items: center;
 }
+
+.img {
+    height: 600px;
+    object-fit: cover;
+}

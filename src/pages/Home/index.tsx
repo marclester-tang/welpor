@@ -5,11 +5,11 @@ import {useSelector, useDispatch} from "react-redux";
 import {GET_BREEDS, GET_CATS_BY_BREED} from "../../actions/cat.action";
 import CardList from "../../components/CardList";
 import ContentLoader from 'react-content-loader';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 interface Breed {
-    name: string,
-    id: string
+    name: string | null,
+    id: string | null
 }
 
 const MyLoader = () => (
@@ -43,11 +43,17 @@ const MyLoader = () => (
     </ContentLoader>
 )
 
+const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+}
+
+
 const Home : FC = () => {
     //Set the limit per page to 8 so it would appear balance
     const PAGE_LIMIT = 8;
 
     const history = useHistory();
+    const query = useQuery();
     const dispatch = useDispatch();
     const getBreedStatus = useSelector((state: any)=>state?.cat?.getBreedStatus);
     const getCatListStatus = useSelector((state: any)=>state?.cat?.getCatListStatus);
@@ -58,32 +64,38 @@ const Home : FC = () => {
     const [selectedBreed, setSelectedBreed] = useState<Breed>();
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    useEffect(()=>{
-        dispatch({ type: GET_BREEDS.REQUEST });
-    },[]);
-
     const changeBreed = useCallback(({id, name}: Breed)=>{
         setCurrentPage(1);
         setSelectedBreed({id, name});
         dispatch({ type: GET_CATS_BY_BREED.REQUEST, payload: {page: 1, limit: PAGE_LIMIT, id} });
-    }, []);
+    }, [setCurrentPage, setSelectedBreed, dispatch]);
+
+    useEffect(()=>{
+        dispatch({ type: GET_BREEDS.REQUEST });
+    },[]);
+
+    useEffect(()=>{
+        const id = query.get("breed");
+        const name = query.get("name");
+        if(id !== null && id !== selectedBreed?.id)
+            changeBreed({id, name})
+    }, [query, changeBreed, selectedBreed]);
 
     const incrementPage = useCallback(()=>{
         const newPage = currentPage + 1;
         setCurrentPage(newPage);
         dispatch({ type: GET_CATS_BY_BREED.REQUEST, payload: {page: newPage, limit: PAGE_LIMIT, id: selectedBreed?.id} });
-    }, [currentPage, setCurrentPage, selectedBreed]);
-
+    }, [currentPage, setCurrentPage, selectedBreed, dispatch]);
 
     const onCardItemClick = useCallback((id: string)=>{
         history.push(`/detail/${id}`);
-    },[]);
+    },[history]);
 
     const breedsSelector = useMemo(()=>{
         if(getBreedStatus !== "success")
             return <Spinner animation="grow" variant="secondary" />;
         return <DropdownButton id="dropdown-variants-secondary" title={selectedBreed?.name ?? "Select breed"} key={"Secondary"} variant={"secondary"}>
-            {breeds.map(({id, name}:Breed)=>(<Dropdown.Item key={id} onClick={()=>{changeBreed({id, name})}}>{name}</Dropdown.Item>))}
+            {breeds.map(({id, name}:Breed)=>(<Dropdown.Item key={id} href={`/?breed=${id}&name=${name}`}>{name}</Dropdown.Item>))}
         </DropdownButton>;
     }, [getBreedStatus, selectedBreed]);
 

@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import {Button, Card, Col, Row} from "react-bootstrap";
 import styles from './index.module.css';
 
@@ -14,7 +14,7 @@ const CardList : FC<Props> = ({items, onItemClick}) => {
                 <Card className={styles.card}>
                     <Card.Img variant="top" src={item?.url} className={styles.img}/>
                     <Card.Footer>
-                        <Button variant="light" size="sm" block onClick={()=>{
+                        <Button variant="outline-dark" size="sm" block onClick={()=>{
                             onItemClick(item?.id);
                         }}>
                             View Details
