@@ -1,8 +1,8 @@
 import { all, fork } from "redux-saga/effects";
 
-import catSaga from "./catSaga";
+import catSaga from "./cat.saga";
 
-export function* rootSaga() {
+export default function* rootSaga() {
   yield all([
     fork(catSaga),
   ]);

@@ -1,30 +1,15 @@
-import * as actionTypes from "./balance.action-types";
-
-const initialState = {
-    status: "pending",
-};
-
-export default function reducer(state = initialState, action) {
-    switch (action.type) {
-        case actionTypes.GET_BALANCE.REQUEST:
-            return {
-                ...state,
-                status: 'loading',
-            };
-        case actionTypes.GET_BALANCE.SUCCESS:
-            return {
-                ...state,
-                ...(action.payload.data.length > 0
-                    ? action.payload.data[0]
-                    : { newBalance: "0.00" }),
-                status: 'success',
-            };
-        case actionTypes.GET_BALANCE.FAILURE:
-            return {
-                ...state,
-                status: 'failure',
-            };
-        default:
-            return state;
-    }
+export const GET_BREEDS = {
+    "REQUEST": "GET_BREEDS_REQUEST",
+    "SUCCESS": "GET_BREEDS_SUCCESS",
+    "FAILURE": "GET_BREEDS_FAILURE",
 }
+
+export const GET_CATS_BY_BREED = {
+    "REQUEST": "GET_CATS_BY_BREED_REQUEST",
+    "SUCCESS": "GET_CATS_BY_BREED_SUCCESS",
+    "FAILURE": "GET_CATS_BY_BREED_FAILURE",
+}
+
+export const HAS_MORE = "HAS_MORE"
+
+

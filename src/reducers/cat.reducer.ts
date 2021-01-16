@@ -1,30 +1,55 @@
-import * as actionTypes from "./balance.action-types";
+import * as actionTypes from "../actions/cat.action";
 
 const initialState = {
-    status: "pending",
+    getBreedStatus: "pending",
+    getCatListStatus: "pending",
+    breeds: null,
+    catsByBreed: [],
+    showMore: false,
 };
 
-export default function reducer(state = initialState, action) {
+const reducer = (state = initialState, action: any) => {
     switch (action.type) {
-        case actionTypes.GET_BALANCE.REQUEST:
+        case actionTypes.GET_BREEDS.REQUEST:
             return {
                 ...state,
-                status: 'loading',
+                getBreedStatus: 'loading',
             };
-        case actionTypes.GET_BALANCE.SUCCESS:
+        case actionTypes.GET_BREEDS.SUCCESS:
             return {
                 ...state,
-                ...(action.payload.data.length > 0
-                    ? action.payload.data[0]
-                    : { newBalance: "0.00" }),
-                status: 'success',
+                getBreedStatus: 'success',
+                breeds: action?.payload
             };
-        case actionTypes.GET_BALANCE.FAILURE:
+        case actionTypes.GET_BREEDS.FAILURE:
             return {
                 ...state,
-                status: 'failure',
+                getBreedStatus: 'failure',
+            };
+        case actionTypes.GET_CATS_BY_BREED.REQUEST:
+            return {
+                ...state,
+                getCatListStatus: 'loading',
+            };
+        case actionTypes.GET_CATS_BY_BREED.SUCCESS:
+            return {
+                ...state,
+                getCatListStatus: 'success',
+                catsByBreed: action?.payload
+            };
+        case actionTypes.GET_CATS_BY_BREED.FAILURE:
+            return {
+                ...state,
+                getCatListStatus: 'failure',
+            };
+        case actionTypes.HAS_MORE:
+            return {
+                ...state,
+                showMore: action?.payload,
             };
         default:
             return state;
     }
 }
+
+export default reducer;
